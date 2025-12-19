@@ -37,4 +37,7 @@ If someone wants to book a tour, collect their name, preferred date, and time, t
 
     DEFAULT_GREETING = "Hi there! Thanks for calling Truvo Properties. I'm here to help you find your perfect home. Are you looking to schedule a tour or do you have questions about our available properties?"
 
-    DEFAULT_VOICE_ID = "rachel"  # ElevenLabs voice
+    # ElevenLabs voice IDs (not names)
+    # Rachel: 21m00Tcm4TlvDq8ikWAM, Bella: EXAVITQu4vr4xnSDxMaL
+    # Josh: TxGEqnHWrfWFTfGW9XjX, Adam: pNInz6obpgDQGcFmaJgB
+    DEFAULT_VOICE_ID = "21m00Tcm4TlvDq8ikWAM"  # Rachel

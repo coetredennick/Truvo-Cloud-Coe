@@ -10,12 +10,12 @@ import { Textarea } from "@/components/ui/textarea";
 import type { Agent } from "@/types/database";
 
 const AVAILABLE_VOICES = [
-  { id: "rachel", name: "Rachel (Female, American)" },
-  { id: "josh", name: "Josh (Male, American)" },
-  { id: "bella", name: "Bella (Female, British)" },
-  { id: "adam", name: "Adam (Male, British)" },
-  { id: "elli", name: "Elli (Female, Young)" },
-  { id: "sam", name: "Sam (Male, Young)" },
+  { id: "21m00Tcm4TlvDq8ikWAM", name: "Rachel (Female, American)" },
+  { id: "TxGEqnHWrfWFTfGW9XjX", name: "Josh (Male, American)" },
+  { id: "EXAVITQu4vr4xnSDxMaL", name: "Bella (Female, British)" },
+  { id: "pNInz6obpgDQGcFmaJgB", name: "Adam (Male, American)" },
+  { id: "MF3mGyEYCl7XYWbV9V6O", name: "Elli (Female, Young)" },
+  { id: "yoZ06aMxZJJ28mfd3POQ", name: "Sam (Male, American)" },
 ];
 
 const AVAILABLE_TOOLS = [
