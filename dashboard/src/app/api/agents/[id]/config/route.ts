@@ -25,7 +25,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 Your role is to help potential tenants and buyers with property inquiries.
 Be conversational, helpful, and concise. Keep responses brief for voice.`,
         greeting: "Hi there! Thanks for calling. How can I help you today?",
-        voice_id: "rachel",
+        voice_id: "21m00Tcm4TlvDq8ikWAM",  // Rachel
         tools_enabled: ["check_availability", "book_tour"],
       } as AgentConfig);
     }

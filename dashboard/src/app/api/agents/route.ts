@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
       .insert({
         name,
         system_prompt,
-        voice_id: voice_id || "rachel",
+        voice_id: voice_id || "21m00Tcm4TlvDq8ikWAM",  // Rachel
         greeting: greeting || "Hello, how can I help you today?",
         tools: tools || ["check_availability", "book_tour"],
       })

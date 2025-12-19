@@ -148,7 +148,7 @@ class TruvoAgent(Agent):
 
         # Initialize TTS with configured voice
         self._tts = elevenlabs.TTS(
-            voice=config.get("voice_id", Config.DEFAULT_VOICE_ID),
+            voice_id=config.get("voice_id", Config.DEFAULT_VOICE_ID),
             model="eleven_turbo_v2_5",
         )
 
