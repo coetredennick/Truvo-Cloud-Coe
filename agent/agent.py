@@ -243,15 +243,15 @@ class TruvoAgent(Agent):
             temperature=0.7,  # Balanced for coherent yet natural responses
         )
 
-        # Initialize TTS with natural, expressive settings (optimized for realism)
+        # Initialize TTS - low latency model
         self._tts = elevenlabs.TTS(
             voice_id=config.get("voice_id", Config.DEFAULT_VOICE_ID),
             model="eleven_turbo_v2_5",
             voice_settings=elevenlabs.VoiceSettings(
-                stability=0.45,          # Balanced for natural speech without robotic variance
-                similarity_boost=0.75,   # Higher consistency for realistic voice
-                style=0.35,              # More expressive personality
-                use_speaker_boost=True,  # Enhanced clarity
+                stability=0.5,
+                similarity_boost=0.75,
+                style=0.3,
+                use_speaker_boost=True,
             ),
         )
 
@@ -303,23 +303,23 @@ async def entrypoint(ctx: JobContext):
     # Create the agent
     agent = TruvoAgent(config)
 
-    # Start the agent session with low-latency settings
+    # Start the agent session with ultra-low-latency settings
     session = AgentSession(
         allow_interruptions=True,
-        min_endpointing_delay=0.3,          # Faster response (optimized from 0.4)
-        max_endpointing_delay=3.5,          # Reduced max wait (optimized from 4.0)
-        min_interruption_duration=0.15,     # Faster interruption detection (optimized from 0.25)
+        min_endpointing_delay=0.15,         # Very fast response after speech ends
+        max_endpointing_delay=2.0,          # Don't wait too long for more speech
+        min_interruption_duration=0.1,      # Quick interruption detection
         turn_detection=MultilingualModel(), # ML-based turn detection
         preemptive_generation=True,         # Start generating before turn ends
     )
 
-    # Start the session
+    # Start the session and greet immediately
     await session.start(
         agent=agent,
         room=ctx.room,
     )
 
-    # Send initial greeting
+    # Greet caller immediately
     await session.say(agent.greeting)
 
 
