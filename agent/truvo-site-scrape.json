@@ -1,0 +1,185 @@
+{
+  "gettruvo_product_features": [
+    {
+      "value": "AI interprets inbound communication, extracts intent, and identifies context",
+      "value_citation": "https://www.gettruvo.com/"
+    },
+    {
+      "value": "Automated workflows route requests, trigger actions, and resolve tasks",
+      "value_citation": "https://www.gettruvo.com/"
+    },
+    {
+      "value": "Results sync to your existing systems in real-time, keeping everything aligned",
+      "value_citation": "https://www.gettruvo.com/"
+    },
+    {
+      "value": "Integrated with the systems you already use",
+      "value_citation": "https://www.gettruvo.com/"
+    },
+    {
+      "value": "AI processes inbound requests via voice, SMS, email, and form submissions",
+      "value_citation": "https://www.gettruvo.com/"
+    },
+    {
+      "value": "Automated workflows handle routing, scheduling, ticket creation, vendor dispatch, and follow-ups",
+      "value_citation": "https://www.gettruvo.com/"
+    },
+    {
+      "value": "Syncs with CRM, PMS, and operational systems",
+      "value_citation": "https://www.gettruvo.com/"
+    },
+    {
+      "value": "Understands requests, executes actions, and integrates with existing systems",
+      "value_citation": "https://www.gettruvo.com/"
+    },
+    {
+      "value": "Processes inbound requests via voice, SMS, email, and form submissions",
+      "value_citation": "https://www.gettruvo.com/platform"
+    },
+    {
+      "value": "Classifies intent, extracts data, and determines next steps",
+      "value_citation": "https://www.gettruvo.com/platform"
+    },
+    {
+      "value": "Handles routing, scheduling, ticket creation, vendor dispatch, and follow-ups",
+      "value_citation": "https://www.gettruvo.com/platform"
+    },
+    {
+      "value": "No manual intervention required",
+      "value_citation": "https://www.gettruvo.com/platform"
+    },
+    {
+      "value": "Real-time bidirectional data flow keeps everything in sync",
+      "value_citation": "https://www.gettruvo.com/platform"
+    },
+    {
+      "value": "24/7 automated coverage",
+      "value_citation": "https://www.gettruvo.com/platform"
+    },
+    {
+      "value": "100% lead capture",
+      "value_citation": "https://www.gettruvo.com/platform"
+    },
+    {
+      "value": "Instant response time",
+      "value_citation": "https://www.gettruvo.com/platform"
+    },
+    {
+      "value": "Automated issue classification and triage",
+      "value_citation": "https://www.gettruvo.com/platform"
+    },
+    {
+      "value": "Smart agent/vendor assignment",
+      "value_citation": "https://www.gettruvo.com/platform"
+    },
+    {
+      "value": "Automated nurture sequences",
+      "value_citation": "https://www.gettruvo.com/platform"
+    },
+    {
+      "value": "Priority escalation workflows",
+      "value_citation": "https://www.gettruvo.com/platform"
+    },
+    {
+      "value": "Self-service appointment booking",
+      "value_citation": "https://www.gettruvo.com/platform"
+    },
+    {
+      "value": "Integrates with Salesforce",
+      "value_citation": "https://www.gettruvo.com/"
+    },
+    {
+      "value": "Integrates with HubSpot",
+      "value_citation": "https://www.gettruvo.com/"
+    },
+    {
+      "value": "Integrates with AppFolio",
+      "value_citation": "https://www.gettruvo.com/"
+    },
+    {
+      "value": "Integrates with Yardi",
+      "value_citation": "https://www.gettruvo.com/"
+    },
+    {
+      "value": "Integrates with Buildium",
+      "value_citation": "https://www.gettruvo.com/"
+    },
+    {
+      "value": "Integrates with Entrata",
+      "value_citation": "https://www.gettruvo.com/"
+    },
+    {
+      "value": "Integrates with RealPage",
+      "value_citation": "https://www.gettruvo.com/"
+    },
+    {
+      "value": "Integrates with Follow Up Boss",
+      "value_citation": "https://www.gettruvo.com/"
+    },
+    {
+      "value": "Integrates with KVCore",
+      "value_citation": "https://www.gettruvo.com/"
+    },
+    {
+      "value": "Integrates with Google Calendar",
+      "value_citation": "https://www.gettruvo.com/"
+    },
+    {
+      "value": "Integrates with Outlook",
+      "value_citation": "https://www.gettruvo.com/"
+    },
+    {
+      "value": "Integrates with ServiceTitan",
+      "value_citation": "https://www.gettruvo.com/"
+    },
+    {
+      "value": "Integrates with Jobber",
+      "value_citation": "https://www.gettruvo.com/"
+    }
+  ],
+  "gettruvo_pricing": null,
+  "gettruvo_company_details": {
+    "company_name": "Truvo",
+    "company_name_citation": "https://www.gettruvo.com/",
+    "address": null,
+    "address_citation": null,
+    "contact_email": "contact@gettruvo.com",
+    "contact_email_citation": "https://www.gettruvo.com/",
+    "phone_number": "+1 (856) 857-7378",
+    "phone_number_citation": "https://www.gettruvo.com/"
+  },
+  "gettruvo_service_offerings": [
+    {
+      "value": "Real Estate Brokerages: Agent coordination, listings, transactions",
+      "value_citation": "https://www.gettruvo.com/"
+    },
+    {
+      "value": "Property Management: Leasing, maintenance, tenant operations",
+      "value_citation": "https://www.gettruvo.com/"
+    },
+    {
+      "value": "Investment Firms: Deal pipeline, diligence, portfolio ops",
+      "value_citation": "https://www.gettruvo.com/"
+    },
+    {
+      "value": "Service Operations: Dispatch, routing, job management",
+      "value_citation": "https://www.gettruvo.com/"
+    },
+    {
+      "value": "Automate leasing inquiries, maintenance requests, and tenant communications",
+      "value_citation": "https://www.gettruvo.com/"
+    },
+    {
+      "value": "Intelligent lead capture, routing, and automated follow-up sequences",
+      "value_citation": "https://www.gettruvo.com/"
+    },
+    {
+      "value": "Deal pipeline management, due diligence workflows, and LP communications",
+      "value_citation": "https://www.gettruvo.com/"
+    },
+    {
+      "value": "Job intake automation, intelligent dispatch, and field service coordination",
+      "value_citation": "https://www.gettruvo.com/"
+    }
+  ]
+}

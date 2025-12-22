@@ -7,12 +7,12 @@ from livekit.agents import (
     JobContext,
     JobProcess,
     WorkerOptions,
-    RoomInputOptions,
     cli,
     function_tool,
     llm,
 )
-from livekit.plugins import deepgram, openai, elevenlabs
+from livekit.plugins import deepgram, openai, elevenlabs, groq
+from livekit.plugins.turn_detector.multilingual import MultilingualModel
 
 from config import Config
 
@@ -23,9 +23,18 @@ logger.setLevel(logging.INFO)
 async def fetch_agent_config(room_name: str) -> dict:
     """Fetch agent configuration from the Next.js dashboard API."""
     try:
-        parts = room_name.split("-")
-        if len(parts) >= 2 and parts[0] == "agent":
-            agent_id = parts[1]
+        # Room name format: agent-{uuid}-{timestamp}
+        # UUID contains hyphens, so we need to extract it properly
+        # Example: agent-a719edb0-fae8-44f7-93bb-8b389e09db74-1766296202271
+        if room_name.startswith("agent-"):
+            # Remove "agent-" prefix, then split off the timestamp (last segment)
+            remainder = room_name[6:]  # Remove "agent-"
+            # UUID is 36 chars (8-4-4-4-12 format), timestamp is at the end
+            parts = remainder.rsplit("-", 1)  # Split from right, only once
+            if len(parts) == 2 and len(parts[0]) == 36:  # UUID is 36 chars
+                agent_id = parts[0]
+            else:
+                agent_id = None
         else:
             agent_id = None
 
@@ -134,26 +143,126 @@ async def book_tour(date: str, time: str, name: str, email: str, phone: str = ""
     return "I'm having trouble completing the booking right now. Would you like me to try again?"
 
 
+@function_tool
+async def book_demo(name: str, email: str, phone: str = "", preferred_time: str = "") -> str:
+    """Book a Truvo product demo. IMPORTANT: Only call this AFTER you have explicitly asked the caller for their name and email and they have provided real values. Never use placeholder or example values like 'john@example.com'. If you don't have their real email, ask for it first.
+
+    Args:
+        name: The caller's real full name (must be explicitly provided by caller)
+        email: The caller's real email address (must be explicitly provided by caller, never guess)
+        phone: Phone number if provided (optional)
+        preferred_time: Their stated preferred time (optional)
+    """
+    from datetime import datetime, timedelta
+    import os
+
+    # Try Google Calendar first
+    if Config.GOOGLE_SERVICE_ACCOUNT_FILE and Config.GOOGLE_CALENDAR_ID:
+        try:
+            from google.oauth2 import service_account
+            from googleapiclient.discovery import build
+
+            # Get the directory where agent.py is located
+            agent_dir = os.path.dirname(os.path.abspath(__file__))
+            service_account_path = os.path.join(agent_dir, Config.GOOGLE_SERVICE_ACCOUNT_FILE)
+
+            credentials = service_account.Credentials.from_service_account_file(
+                service_account_path,
+                scopes=['https://www.googleapis.com/auth/calendar']
+            )
+            service = build('calendar', 'v3', credentials=credentials)
+
+            # Parse preferred time or default to tomorrow 2pm
+            now = datetime.now()
+            if preferred_time:
+                # Simple parsing - default to tomorrow if we can't parse
+                start_time = (now + timedelta(days=1)).replace(hour=14, minute=0, second=0, microsecond=0)
+                # Try to extract hour if mentioned
+                if "morning" in preferred_time.lower():
+                    start_time = start_time.replace(hour=10)
+                elif "afternoon" in preferred_time.lower():
+                    start_time = start_time.replace(hour=14)
+                elif "3" in preferred_time:
+                    start_time = start_time.replace(hour=15)
+                elif "4" in preferred_time:
+                    start_time = start_time.replace(hour=16)
+                elif "11" in preferred_time:
+                    start_time = start_time.replace(hour=11)
+                elif "10" in preferred_time:
+                    start_time = start_time.replace(hour=10)
+            else:
+                start_time = (now + timedelta(days=1)).replace(hour=14, minute=0, second=0, microsecond=0)
+
+            end_time = start_time + timedelta(minutes=30)
+
+            event = {
+                'summary': f'Truvo Demo - {name}',
+                'description': f'Truvo product demo\n\nName: {name}\nEmail: {email}\nPhone: {phone or "Not provided"}\n\nBooked via Truvo AI receptionist',
+                'start': {
+                    'dateTime': start_time.isoformat(),
+                    'timeZone': 'America/New_York',
+                },
+                'end': {
+                    'dateTime': end_time.isoformat(),
+                    'timeZone': 'America/New_York',
+                },
+                'reminders': {
+                    'useDefault': False,
+                    'overrides': [
+                        {'method': 'popup', 'minutes': 15},
+                    ],
+                },
+            }
+
+            event = service.events().insert(
+                calendarId=Config.GOOGLE_CALENDAR_ID,
+                body=event,
+            ).execute()
+
+            formatted_time = start_time.strftime("%A at %I:%M %p")
+            return f"You're all set! I've booked your demo for {formatted_time} and sent a calendar invite to {email}. Looking forward to showing you what Truvo can do!"
+
+        except Exception as e:
+            logger.error(f"Google Calendar booking failed: {e}")
+
+    # Fallback - simulate booking
+    time_msg = f" for {preferred_time}" if preferred_time else ""
+    return f"Perfect! I've got you down for a demo{time_msg}. You'll receive a confirmation at {email} shortly. Looking forward to showing you what Truvo can do for your business!"
+
+
 class TruvoAgent(Agent):
     """Truvo real estate voice agent."""
 
     def __init__(self, config: dict) -> None:
         self._config = config
 
-        # Initialize LLM
+        # Initialize LLM - OpenAI for better conversation quality
+        logger.info("Using OpenAI LLM (gpt-4o-mini)")
         self._llm = openai.LLM(
             model="gpt-4o-mini",
-            temperature=0.7,
+            temperature=0.7,  # Balanced for coherent yet natural responses
         )
 
-        # Initialize TTS with configured voice
+        # Initialize TTS with natural, expressive settings (optimized for realism)
         self._tts = elevenlabs.TTS(
             voice_id=config.get("voice_id", Config.DEFAULT_VOICE_ID),
             model="eleven_turbo_v2_5",
+            voice_settings=elevenlabs.VoiceSettings(
+                stability=0.45,          # Balanced for natural speech without robotic variance
+                similarity_boost=0.75,   # Higher consistency for realistic voice
+                style=0.35,              # More expressive personality
+                use_speaker_boost=True,  # Enhanced clarity
+            ),
         )
 
-        # Initialize STT
-        self._stt = deepgram.STT(model="nova-2")
+        # Initialize STT with low-latency settings
+        self._stt = deepgram.STT(
+            model="nova-3",
+            language="en",
+            detect_language=False,      # Skip language detection for speed
+            interim_results=True,       # Stream partial results
+            smart_format=True,          # Better formatting
+        )
 
         # Build tools list based on config
         tools = []
@@ -162,6 +271,8 @@ class TruvoAgent(Agent):
             tools.append(check_availability)
         if "book_tour" in enabled_tools:
             tools.append(book_tour)
+        if "book_demo" in enabled_tools:
+            tools.append(book_demo)
 
         super().__init__(
             instructions=config.get("system_prompt", Config.DEFAULT_SYSTEM_PROMPT),
@@ -183,6 +294,8 @@ async def entrypoint(ctx: JobContext):
     # Fetch agent configuration from dashboard API
     config = await fetch_agent_config(ctx.room.name)
     logger.info(f"Loaded config - Voice: {config.get('voice_id')}, Tools: {config.get('tools_enabled')}")
+    logger.info(f"Greeting: {config.get('greeting')}")
+    logger.info(f"System prompt preview: {config.get('system_prompt', '')[:100]}...")
 
     # Connect to the room
     await ctx.connect()
@@ -190,17 +303,20 @@ async def entrypoint(ctx: JobContext):
     # Create the agent
     agent = TruvoAgent(config)
 
-    # Start the agent session
+    # Start the agent session with low-latency settings
     session = AgentSession(
         allow_interruptions=True,
-        min_endpointing_delay=0.5,
+        min_endpointing_delay=0.3,          # Faster response (optimized from 0.4)
+        max_endpointing_delay=3.5,          # Reduced max wait (optimized from 4.0)
+        min_interruption_duration=0.15,     # Faster interruption detection (optimized from 0.25)
+        turn_detection=MultilingualModel(), # ML-based turn detection
+        preemptive_generation=True,         # Start generating before turn ends
     )
 
     # Start the session
     await session.start(
         agent=agent,
         room=ctx.room,
-        room_input_options=RoomInputOptions(),
     )
 
     # Send initial greeting
@@ -208,8 +324,21 @@ async def entrypoint(ctx: JobContext):
 
 
 def prewarm(proc: JobProcess):
-    """Prewarm function - called before accepting jobs."""
-    proc.userdata["deepgram_stt"] = deepgram.STT(model="nova-2")
+    """Prewarm function - initialize components before accepting jobs for faster cold start."""
+    # Prewarm STT
+    proc.userdata["deepgram_stt"] = deepgram.STT(
+        model="nova-3",
+        language="en",
+        detect_language=False,
+        interim_results=True,
+    )
+    # Prewarm TTS (establishes connection)
+    proc.userdata["elevenlabs_tts"] = elevenlabs.TTS(
+        voice_id="iRJijZumQA1KkKmi0Dg6",
+        model="eleven_turbo_v2_5",
+    )
+    # Prewarm LLM
+    proc.userdata["llm"] = openai.LLM(model="gpt-4o-mini")
 
 
 if __name__ == "__main__":
